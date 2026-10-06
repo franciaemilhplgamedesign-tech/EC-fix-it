@@ -35,7 +35,7 @@ npm install
 npm run dist:win
 ```
 
-The finished `EC fix-it-1.0.1-win-x64.exe` is written to `release/`.
+The finished `EC fix-it-1.0.2-win-x64.exe` is written to `release/`.
 It is a self-contained portable desktop app and does not require a separate
 Node.js installation.
 
