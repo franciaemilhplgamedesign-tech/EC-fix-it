@@ -164,8 +164,25 @@
       <p class="footer-note">
         Files are processed locally and are never uploaded.
       </p>
+      <section class="update-panel" aria-label="Application updates">
+        <div class="update-copy">
+          <p class="step-label">APP UPDATES</p>
+          <p class="update-version" id="update-version">Installed build</p>
+          <p class="update-status" id="update-status" role="status" aria-live="polite">
+            Check GitHub for a newer EC fix-it build.
+          </p>
+        </div>
+        <div class="update-actions">
+          <button class="secondary-button" id="check-updates" type="button">
+            Check for updates
+          </button>
+          <button class="primary-button" id="download-update" type="button" hidden>
+            Download update
+          </button>
+        </div>
+      </section>
       <p class="footer-note">
-        Created by: Emil Francia | EC fix-it | September 2026
+        Created by: Emil Francia | EC fix-it | September 2026 | Version 1.0.1
       </p>
     </main>
 

@@ -1315,6 +1315,11 @@
     const themeToggleLabel = document.getElementById("theme-toggle-label");
     const themeColor = document.querySelector('meta[name="theme-color"]');
     const brandLogo = document.querySelector(".brand-logo");
+    const updateVersion = document.getElementById("update-version");
+    const updateStatus = document.getElementById("update-status");
+    const checkUpdatesButton = document.getElementById("check-updates");
+    const downloadUpdateButton = document.getElementById("download-update");
+    const updateApi = window.ecFixIt;
 
     let selectedFile = null;
     let selectedSource = "";
@@ -1361,6 +1366,78 @@
         true,
       );
     });
+
+    if (!updateApi) {
+      checkUpdatesButton.disabled = true;
+      updateVersion.textContent = "Windows desktop app only";
+      updateStatus.textContent =
+        "Update checks are available in the EC fix-it executable.";
+    } else {
+      void updateApi
+        .getVersion()
+        .then((version) => {
+          updateVersion.textContent = "Installed version: " + version;
+        })
+        .catch((error) => {
+          updateVersion.textContent = "Installed version unavailable";
+          updateStatus.textContent =
+            error instanceof Error ? error.message : "Could not read the app version.";
+        });
+
+      checkUpdatesButton.addEventListener("click", async () => {
+        checkUpdatesButton.disabled = true;
+        downloadUpdateButton.hidden = true;
+        updateStatus.textContent = "Checking GitHub releases…";
+
+        try {
+          const update = await updateApi.checkForUpdates();
+          if (update.status === "no-release") {
+            updateVersion.textContent = "Installed version: " + update.currentVersion;
+            updateStatus.textContent =
+              "No published GitHub release was found for EC fix-it.";
+          } else if (update.status === "current") {
+            updateVersion.textContent = "Installed version: " + update.currentVersion;
+            updateStatus.textContent =
+              "You’re up to date. Latest release: " + update.latestVersion + ".";
+          } else if (update.status === "available") {
+            updateVersion.textContent = "Installed version: " + update.currentVersion;
+            updateStatus.textContent =
+              "Version " +
+              update.latestVersion +
+              " is available. Download it, then close EC fix-it and replace the existing executable.";
+            downloadUpdateButton.textContent =
+              "Download v" + update.latestVersion;
+            downloadUpdateButton.hidden = false;
+          } else {
+            throw new Error("GitHub returned an unknown update status.");
+          }
+        } catch (error) {
+          updateStatus.textContent =
+            "Could not check for updates: " +
+            (error instanceof Error ? error.message : "Unknown error.");
+        } finally {
+          checkUpdatesButton.disabled = false;
+        }
+      });
+
+      downloadUpdateButton.addEventListener("click", async () => {
+        downloadUpdateButton.disabled = true;
+        updateStatus.textContent = "Opening the verified GitHub release download…";
+        try {
+          const update = await updateApi.openUpdateDownload();
+          updateStatus.textContent =
+            "The v" +
+            update.version +
+            " download was opened. Close EC fix-it before replacing the existing executable.";
+        } catch (error) {
+          updateStatus.textContent =
+            "Could not open the update download: " +
+            (error instanceof Error ? error.message : "Unknown error.");
+        } finally {
+          downloadUpdateButton.disabled = false;
+        }
+      });
+    }
 
     function showToast(message) {
       toast.textContent = message;

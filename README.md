@@ -35,9 +35,23 @@ npm install
 npm run dist:win
 ```
 
-The finished `EC fix-it-1.0.0-win-x64.exe` is written to `release/`.
+The finished `EC fix-it-1.0.1-win-x64.exe` is written to `release/`.
 It is a self-contained portable desktop app and does not require a separate
 Node.js installation.
+
+## Check for updates
+
+In the Windows app, use **Check for updates** at the bottom of the window.
+The checker compares the installed version with the latest stable GitHub
+release in `franciaemilhplgamedesign-tech/End-Card-Checker`. When a newer
+version is available, **Download** opens its verified portable Windows
+executable in the browser. Close EC fix-it before replacing the old executable.
+
+Each published release must use a `vX.Y.Z` tag and include an asset named
+`EC fix-it-X.Y.Z-win-x64.exe`. The checker reports when no release or matching
+executable has been published yet. After changing the app version in
+`package.json`, rebuild the portable executable before attaching it to the
+matching GitHub release.
 
 For development, run `npm start`. To open the checker in a browser, open
 `index.html` directly.

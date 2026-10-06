@@ -1,7 +1,42 @@
 "use strict";
 
-const { app, BrowserWindow, dialog } = require("electron");
+const { app, BrowserWindow, dialog, ipcMain, shell } = require("electron");
 const path = require("node:path");
+const { fileURLToPath } = require("node:url");
+const { checkForUpdate } = require("./update-checker.cjs");
+
+function assertTrustedSender(event) {
+  const frame = event.senderFrame;
+  if (!frame || frame !== event.sender.mainFrame || !frame.url.startsWith("file:")) {
+    throw new Error("Update requests must come from the EC fix-it app window.");
+  }
+
+  const sourcePath = path.resolve(fileURLToPath(frame.url));
+  const appPagePath = path.resolve(__dirname, "..", "index.html");
+  if (sourcePath !== appPagePath) {
+    throw new Error("Update requests must come from the EC fix-it app window.");
+  }
+}
+
+ipcMain.handle("app:get-version", (event) => {
+  assertTrustedSender(event);
+  return app.getVersion();
+});
+
+ipcMain.handle("updates:check", async (event) => {
+  assertTrustedSender(event);
+  return checkForUpdate(app.getVersion());
+});
+
+ipcMain.handle("updates:download", async (event) => {
+  assertTrustedSender(event);
+  const update = await checkForUpdate(app.getVersion());
+  if (update.status !== "available") {
+    throw new Error("There is no newer Windows executable to download.");
+  }
+  await shell.openExternal(update.downloadUrl);
+  return { version: update.latestVersion };
+});
 
 function createWindow() {
   const window = new BrowserWindow({
@@ -10,13 +45,14 @@ function createWindow() {
     minWidth: 360,
     minHeight: 560,
     title: "EC fix-it",
-    backgroundColor: "#f5f6f4",
+    backgroundColor: "#f7f7f5",
     autoHideMenuBar: true,
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
       webviewTag: false,
+      preload: path.join(__dirname, "preload.cjs"),
     },
   });
 

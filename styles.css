@@ -570,6 +570,55 @@ h1 {
   text-align: center;
 }
 
+.update-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 24px;
+  padding: 15px 17px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface);
+}
+
+.update-copy {
+  min-width: 0;
+}
+
+.update-version,
+.update-status {
+  margin: 6px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.update-version {
+  color: var(--text-secondary);
+  font-weight: 650;
+}
+
+.update-status {
+  color: var(--muted);
+}
+
+.update-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.update-actions button {
+  min-height: 36px;
+}
+
+.update-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 dialog {
   width: min(100% - 32px, 450px);
   padding: 0;
@@ -684,5 +733,14 @@ code {
   .dialog-actions {
     align-items: stretch;
     flex-direction: column-reverse;
+  }
+
+  .update-panel {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .update-actions {
+    justify-content: flex-start;
   }
 }
