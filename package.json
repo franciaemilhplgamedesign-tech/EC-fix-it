@@ -1,0 +1,54 @@
+{
+  "name": "ec-fix-it",
+  "private": true,
+  "version": "1.0.0",
+  "description": "EC fix-it: check and repair End Cards in single-file HTML ads.",
+  "author": "EC fix-it",
+  "main": "electron/main.cjs",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "start": "electron .",
+    "dist:win": "electron-builder --win portable --x64"
+  },
+  "build": {
+    "appId": "com.ecfixit.desktop",
+    "productName": "EC fix-it",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "checker.js",
+      "index.html",
+      "styles.css",
+      "assets/**/*",
+      "electron/main.cjs",
+      "package.json"
+    ],
+    "win": {
+      "icon": "assets/ec-fix-it.ico",
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "portable": {
+      "artifactName": "EC fix-it-${version}-win-x64.exe"
+    }
+  },
+  "devDependencies": {
+    "electron": "^44.5.1",
+    "electron-builder": "^26.15.3"
+  },
+  "allowScripts": {
+    "electron@39.8.10": true,
+    "electron-winstaller@5.4.0": true
+  }
+}

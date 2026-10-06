@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="EC fix-it: check and repair End Cards in single-file HTML ads."
+    />
+    <meta name="theme-color" content="#f5f6f4" />
+    <title>EC fix-it — End Card check and fix</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./checker.js" defer></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <img
+          class="brand-logo"
+          src="./assets/ec-fix-it-logo.png"
+          data-light-src="./assets/ec-fix-it-logo.png"
+          data-dark-src="./assets/ec-fix-it-logo-dark.png"
+          draggable="false"
+          alt="EC fix-it"
+        />
+        <button
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button"
+          aria-label="Switch to dark mode"
+          title="Switch to dark mode"
+        >
+          <svg
+            class="theme-toggle-icon"
+            id="theme-toggle-icon"
+            viewBox="0 0 20 20"
+            fill="none"
+            aria-hidden="true"
+          ></svg>
+          <span class="theme-toggle-label" id="theme-toggle-label">Dark mode</span>
+        </button>
+      </header>
+
+      <div class="tool-tabs" role="tablist" aria-label="Creative tools">
+        <button
+          class="tool-tab is-active"
+          id="check-tab"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="check-panel"
+        >
+          MIP EC Check and Fix
+        </button>
+        <button
+          class="tool-tab"
+          id="inject-tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="inject-panel"
+          tabindex="-1"
+        >
+          EC Changer
+        </button>
+      </div>
+
+      <section class="tool-panel" id="check-panel" role="tabpanel" aria-labelledby="check-tab">
+      <section class="upload-card" aria-labelledby="upload-title">
+        <div class="card-heading">
+          <div>
+            <p class="step-label">Check and Fix</p>
+            <h2 id="upload-title">Choose an HTML file</h2>
+          </div>
+          <span class="file-type">.HTML</span>
+        </div>
+
+        <label class="drop-zone" id="drop-zone" for="file-input" tabindex="0">
+          <span class="upload-icon" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none">
+              <path d="M16 21V6m0 0-6 6m6-6 6 6M7 19v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6" />
+            </svg>
+          </span>
+          <span class="drop-title">Drop your MIP HTML here</span>
+          <span class="drop-subtitle">or browse files on your device</span>
+          <span class="browse-button">Browse HTML</span>
+          <input id="file-input" type="file" accept=".html,.htm,text/html" />
+        </label>
+
+        <p class="privacy-note">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M5 8V6a5 5 0 0 1 10 0v2m-11 0h12v9H4V8Zm6 4v2" />
+          </svg>
+          Your file stays in this browser. Nothing is uploaded.
+        </p>
+        <p class="size-limit-note">
+          Hard output limit: 5 MB (5,000,000 bytes). Larger fixes are blocked.
+        </p>
+      </section>
+
+      <section class="result-card" id="result-card" aria-live="polite" hidden>
+        <div class="result-heading">
+          <span class="result-icon" id="result-icon" aria-hidden="true"></span>
+          <div>
+            <p class="step-label">CHECK RESULT</p>
+            <h2 id="result-title"></h2>
+          </div>
+        </div>
+        <p class="result-file" id="result-file"></p>
+        <p class="result-message" id="result-message"></p>
+        <ul class="check-list" id="check-list"></ul>
+        <div class="result-actions" id="result-actions" hidden>
+          <button class="primary-button" id="fix-button" type="button">
+            Review and fix
+          </button>
+        </div>
+      </section>
+      </section>
+
+      <section
+        class="tool-panel"
+        id="inject-panel"
+        role="tabpanel"
+        aria-labelledby="inject-tab"
+        hidden
+      >
+        <section class="upload-card" aria-labelledby="inject-title">
+          <div class="card-heading">
+            <div>
+              <p class="step-label">MIP + SIP</p>
+              <h2 id="inject-title">Add or replace an End Card</h2>
+            </div>
+            <span class="file-type">2 HTML FILES</span>
+          </div>
+
+          <div class="file-picker">
+            <label for="mip-input">MIP HTML (with or without an End Card placeholder)</label>
+            <input id="mip-input" type="file" accept=".html,.htm,text/html" />
+            <p class="selected-file" id="mip-file-name">No MIP selected</p>
+          </div>
+          <div class="file-picker">
+            <label for="sip-input">SIP HTML (to use as the End Card)</label>
+            <input id="sip-input" type="file" accept=".html,.htm,text/html" />
+            <p class="selected-file" id="sip-file-name">No SIP selected</p>
+          </div>
+          <p class="privacy-note">
+            Both files stay on this device. An existing HTML End Card
+            placeholder will be replaced with the SIP; otherwise, the SIP is
+            added as a full-screen iframe with a compressed Base64 payload.
+          </p>
+          <p class="size-limit-note">
+            Hard output limit: 5 MB (5,000,000 bytes). Oversized MIP + SIP
+            combinations cannot be downloaded.
+          </p>
+          <div class="result-actions">
+            <button class="primary-button" id="inject-button" type="button" disabled>
+              Add or replace End Card
+            </button>
+          </div>
+          <p class="inject-status" id="inject-status" role="status" aria-live="polite"></p>
+        </section>
+      </section>
+
+      <p class="footer-note">
+        Files are processed locally and are never uploaded.
+      </p>
+      <p class="footer-note">
+        Created by: Emil Francia | EC fix-it | September 2026
+      </p>
+    </main>
+
+    <dialog id="fix-dialog" aria-labelledby="dialog-title">
+      <form method="dialog" class="dialog-content">
+        <span class="dialog-icon" aria-hidden="true">!</span>
+        <p class="step-label">FIX AVAILABLE</p>
+        <h2 id="dialog-title">Prepare fixed MIP</h2>
+        <p>
+          The MIP will be prepared to store HTML End Cards as Base64 (using
+          compression when needed), make them full-screen, route taps through
+          <code>mraid.open</code>, and log
+          <code>CTA_CLICKED</code>. The fixed file must be no larger than
+          5 MB (5,000,000 bytes).
+        </p>
+        <div class="dialog-actions">
+          <button class="secondary-button" value="cancel">Not now</button>
+          <button class="primary-button" id="confirm-fix" value="fix">
+            Fix and download
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
