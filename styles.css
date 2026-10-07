@@ -222,7 +222,7 @@ h1 {
 .tool-tab {
   min-height: 39px;
   flex: 1;
-  padding: 0 12px;
+  padding: 6px 12px;
   border: 1px solid transparent;
   border-radius: 8px;
   color: var(--text-tertiary);
@@ -240,6 +240,26 @@ h1 {
 
 .tool-panel {
   min-width: 0;
+}
+
+.coming-soon-card {
+  min-height: 210px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.coming-soon-card h2 {
+  margin: 7px 0 8px;
+  font-size: 22px;
+}
+
+.coming-soon-copy {
+  max-width: 480px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
 }
 
 .upload-card,
@@ -570,6 +590,37 @@ h1 {
   text-align: center;
 }
 
+.app-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 13px;
+  color: var(--text-quiet);
+  font-size: 11px;
+}
+
+.text-button {
+  padding: 4px 0;
+  border: 0;
+  color: var(--green-text);
+  background: transparent;
+  font-size: inherit;
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.text-button:hover {
+  color: var(--green-hover);
+}
+
+.text-button:focus-visible,
+.dialog-close:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+
 .update-panel {
   display: flex;
   align-items: center;
@@ -629,6 +680,11 @@ dialog {
   box-shadow: 0 24px 80px rgb(0 0 0 / 28%);
 }
 
+dialog#changelog-dialog {
+  width: min(100% - 32px, 620px);
+  max-height: min(82vh, 760px);
+}
+
 dialog::backdrop {
   background: rgb(0 0 0 / 58%);
   backdrop-filter: blur(3px);
@@ -674,6 +730,76 @@ code {
 .dialog-actions {
   justify-content: flex-end;
   gap: 9px;
+}
+
+.changelog-dialog-content {
+  display: flex;
+  max-height: min(82vh, 760px);
+  flex-direction: column;
+  padding: 24px;
+}
+
+.changelog-heading {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--line);
+}
+
+.changelog-heading h2 {
+  margin: 6px 0 0;
+  font-size: 21px;
+  letter-spacing: -0.035em;
+}
+
+.dialog-close {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--text-secondary);
+  background: var(--surface);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.dialog-close:hover {
+  background: var(--surface-hover);
+}
+
+.changelog-body {
+  overflow-y: auto;
+  padding: 12px 2px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.changelog-body h1,
+.changelog-body h2,
+.changelog-body h3 {
+  margin: 15px 0 7px;
+  color: var(--ink);
+  font-size: 17px;
+  letter-spacing: -0.025em;
+}
+
+.changelog-body h1:first-child,
+.changelog-body h2:first-child {
+  margin-top: 0;
+}
+
+.changelog-body ul {
+  margin: 6px 0 12px;
+  padding-left: 22px;
+}
+
+.changelog-body p {
+  margin: 0 0 9px;
 }
 
 .toast {
@@ -732,12 +858,21 @@ code {
 
   .dialog-actions {
     align-items: stretch;
+  }
+
+  .tool-tab {
+    padding: 6px 7px;
+    font-size: 10px;
     flex-direction: column-reverse;
   }
 
   .update-panel {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .changelog-dialog-content {
+    padding: 20px;
   }
 
   .update-actions {

@@ -6,7 +6,7 @@ const RELEASE_DOWNLOAD_PREFIX =
   "/franciaemilhplgamedesign-tech/End-Card-Checker/releases/download/";
 
 function parseVersion(version) {
-  const match = /^v?(\d+)\.(\d+)\.(\d+)$/.exec(version);
+  const match = /^(?:ec-fix-it-)?v?(\d+)\.(\d+)\.(\d+)$/i.exec(version);
   if (!match) {
     throw new Error("The app or release has an unsupported version format.");
   }
@@ -68,7 +68,7 @@ async function checkForUpdate(currentVersion, fetchImpl = fetch) {
     throw new Error("GitHub returned release data in an unsupported format.");
   }
 
-  const latestVersion = release.tag_name.replace(/^v/, "");
+  const latestVersion = parseVersion(release.tag_name).join(".");
   if (compareVersions(latestVersion, currentVersion) <= 0) {
     return { status: "current", currentVersion, latestVersion };
   }

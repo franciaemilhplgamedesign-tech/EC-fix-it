@@ -35,7 +35,7 @@ npm install
 npm run dist:win
 ```
 
-The finished `EC fix-it-1.0.2-win-x64.exe` is written to `release/`.
+The finished `EC fix-it-1.0.3-win-x64.exe` is written to `release/`.
 It is a self-contained portable desktop app and does not require a separate
 Node.js installation.
 
@@ -47,11 +47,15 @@ release in `franciaemilhplgamedesign-tech/End-Card-Checker`. When a newer
 version is available, **Download** opens its verified portable Windows
 executable in the browser. Close EC fix-it before replacing the old executable.
 
-Each published release must use a `vX.Y.Z` tag and include an asset named
+Each published release must use a version tag (for example,
+`ec-fix-it-v1.0.3`) and include an asset named
 `EC fix-it-X.Y.Z-win-x64.exe`. The checker reports when no release or matching
 executable has been published yet. After changing the app version in
 `package.json`, rebuild the portable executable before attaching it to the
 matching GitHub release.
+
+Release notes are maintained in [CHANGELOG.md](./CHANGELOG.md) and can be
+opened from the app's bottom-right **Changelog** link.
 
 For development, run `npm start`. To open the checker in a browser, open
 `index.html` directly.

@@ -1,6 +1,7 @@
 "use strict";
 
 const { app, BrowserWindow, dialog, ipcMain, shell } = require("electron");
+const fs = require("node:fs/promises");
 const path = require("node:path");
 const { fileURLToPath } = require("node:url");
 const { checkForUpdate } = require("./update-checker.cjs");
@@ -21,6 +22,11 @@ function assertTrustedSender(event) {
 ipcMain.handle("app:get-version", (event) => {
   assertTrustedSender(event);
   return app.getVersion();
+});
+
+ipcMain.handle("app:get-changelog", async (event) => {
+  assertTrustedSender(event);
+  return fs.readFile(path.join(__dirname, "..", "CHANGELOG.md"), "utf8");
 });
 
 ipcMain.handle("updates:check", async (event) => {

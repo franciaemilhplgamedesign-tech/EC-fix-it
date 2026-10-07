@@ -1302,8 +1302,10 @@
     const toast = document.getElementById("toast");
     const checkTab = document.getElementById("check-tab");
     const injectTab = document.getElementById("inject-tab");
+    const builderTab = document.getElementById("builder-tab");
     const checkPanel = document.getElementById("check-panel");
     const injectPanel = document.getElementById("inject-panel");
+    const builderPanel = document.getElementById("builder-panel");
     const mipInput = document.getElementById("mip-input");
     const sipInput = document.getElementById("sip-input");
     const mipFileName = document.getElementById("mip-file-name");
@@ -1320,6 +1322,8 @@
     const checkUpdatesButton = document.getElementById("check-updates");
     const downloadUpdateButton = document.getElementById("download-update");
     const updateApi = window.ecFixIt;
+    const changelogDialog = document.getElementById("changelog-dialog");
+    const changelogBody = document.getElementById("changelog-body");
 
     let selectedFile = null;
     let selectedSource = "";
@@ -1366,6 +1370,59 @@
         true,
       );
     });
+
+    function renderChangelog(markdown) {
+      const fragment = document.createDocumentFragment();
+      let list = null;
+
+      for (const line of markdown.split(/\r?\n/)) {
+        const heading = /^(#{1,3})\s+(.+)$/.exec(line);
+        const listItem = /^\s*[-*]\s+(.+)$/.exec(line);
+
+        if (listItem) {
+          if (!list) {
+            list = document.createElement("ul");
+            fragment.append(list);
+          }
+          const item = document.createElement("li");
+          item.textContent = listItem[1];
+          list.append(item);
+          continue;
+        }
+
+        list = null;
+        if (!line.trim()) {
+          continue;
+        }
+
+        const element = document.createElement(heading ? "h" + heading[1].length : "p");
+        element.textContent = heading ? heading[2] : line;
+        fragment.append(element);
+      }
+
+      changelogBody.replaceChildren(fragment);
+    }
+
+    document.getElementById("show-changelog").addEventListener("click", async () => {
+      changelogDialog.showModal();
+      changelogBody.textContent = "Loading changelog…";
+      try {
+        const markdown = updateApi
+          ? await updateApi.getChangelog()
+          : await (await fetch("./CHANGELOG.md")).text();
+        renderChangelog(markdown);
+      } catch (error) {
+        changelogBody.textContent =
+          "Could not load the changelog: " +
+          (error instanceof Error ? error.message : "Unknown error.");
+      }
+    });
+
+    for (const closeButtonId of ["close-changelog", "dismiss-changelog"]) {
+      document.getElementById(closeButtonId).addEventListener("click", () => {
+        changelogDialog.close();
+      });
+    }
 
     if (!updateApi) {
       checkUpdatesButton.disabled = true;
@@ -1574,15 +1631,18 @@
     }
 
     function selectTool(tab) {
-      const showChecker = tab === checkTab;
-      checkTab.classList.toggle("is-active", showChecker);
-      injectTab.classList.toggle("is-active", !showChecker);
-      checkTab.setAttribute("aria-selected", String(showChecker));
-      injectTab.setAttribute("aria-selected", String(!showChecker));
-      checkTab.tabIndex = showChecker ? 0 : -1;
-      injectTab.tabIndex = showChecker ? -1 : 0;
-      checkPanel.hidden = !showChecker;
-      injectPanel.hidden = showChecker;
+      const tabs = [
+        [checkTab, checkPanel],
+        [injectTab, injectPanel],
+        [builderTab, builderPanel],
+      ];
+      for (const [currentTab, panel] of tabs) {
+        const selected = currentTab === tab;
+        currentTab.classList.toggle("is-active", selected);
+        currentTab.setAttribute("aria-selected", String(selected));
+        currentTab.tabIndex = selected ? 0 : -1;
+        panel.hidden = !selected;
+      }
     }
 
     function updateInjectButton() {
@@ -1637,11 +1697,15 @@
 
     checkTab.addEventListener("click", () => selectTool(checkTab));
     injectTab.addEventListener("click", () => selectTool(injectTab));
-    for (const tab of [checkTab, injectTab]) {
+    builderTab.addEventListener("click", () => selectTool(builderTab));
+    const toolTabs = [checkTab, injectTab, builderTab];
+    for (const tab of toolTabs) {
       tab.addEventListener("keydown", (event) => {
         if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
           event.preventDefault();
-          const next = tab === checkTab ? injectTab : checkTab;
+          const index = toolTabs.indexOf(tab);
+          const offset = event.key === "ArrowRight" ? 1 : -1;
+          const next = toolTabs[(index + offset + toolTabs.length) % toolTabs.length];
           selectTool(next);
           next.focus();
         }
