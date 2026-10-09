@@ -8,7 +8,7 @@ function createFetchResponse(status, body) {
   return async (url, options) => {
     assert.equal(
       url,
-      "https://api.github.com/repos/franciaemilhplgamedesign-tech/End-Card-Checker/releases/latest",
+      "https://api.github.com/repos/franciaemilhplgamedesign-tech/EC-fix-it/releases/latest",
     );
     assert.equal(options.headers.Accept, "application/vnd.github+json");
     return {
@@ -35,7 +35,7 @@ test("reports a newer release with the matching portable Windows asset", async (
         {
           name: "EC fix-it-1.2.0-win-x64.exe",
           browser_download_url:
-            "https://github.com/franciaemilhplgamedesign-tech/End-Card-Checker/releases/download/ec-fix-it-v1.2.0/EC%20fix-it-1.2.0-win-x64.exe",
+            "https://github.com/franciaemilhplgamedesign-tech/EC-fix-it/releases/download/ec-fix-it-v1.2.0/EC%20fix-it-1.2.0-win-x64.exe",
         },
       ],
     }),
@@ -46,7 +46,31 @@ test("reports a newer release with the matching portable Windows asset", async (
     currentVersion: "1.0.0",
     latestVersion: "1.2.0",
     downloadUrl:
-      "https://github.com/franciaemilhplgamedesign-tech/End-Card-Checker/releases/download/ec-fix-it-v1.2.0/EC%20fix-it-1.2.0-win-x64.exe",
+      "https://github.com/franciaemilhplgamedesign-tech/EC-fix-it/releases/download/ec-fix-it-v1.2.0/EC%20fix-it-1.2.0-win-x64.exe",
+  });
+});
+
+test("accepts the portable executable filename used by the published release", async () => {
+  const result = await checkForUpdate(
+    "1.0.3",
+    createFetchResponse(200, {
+      tag_name: "ec-fix-it-v1.0.4",
+      assets: [
+        {
+          name: "EC.fix-it-1.0.4-win-x64.exe",
+          browser_download_url:
+            "https://github.com/franciaemilhplgamedesign-tech/EC-fix-it/releases/download/ec-fix-it-v1.0.4/EC.fix-it-1.0.4-win-x64.exe",
+        },
+      ],
+    }),
+  );
+
+  assert.deepEqual(result, {
+    status: "available",
+    currentVersion: "1.0.3",
+    latestVersion: "1.0.4",
+    downloadUrl:
+      "https://github.com/franciaemilhplgamedesign-tech/EC-fix-it/releases/download/ec-fix-it-v1.0.4/EC.fix-it-1.0.4-win-x64.exe",
   });
 });
 

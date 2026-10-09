@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.5 — 2026-10-09
+
+- Fixed update detection for the renamed public `EC-fix-it` repository.
+- Accepted the published `EC.fix-it-X.Y.Z-win-x64.exe` asset name alongside
+  the existing `EC fix-it-X.Y.Z-win-x64.exe` format.
+
 ## 1.0.4 — 2026-10-09
 
 - Integrated the Template Builder in the MIP Builder tab, including editing,

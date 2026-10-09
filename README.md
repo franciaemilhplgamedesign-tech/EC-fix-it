@@ -41,7 +41,7 @@ npm install
 npm run dist:win
 ```
 
-The finished `EC fix-it-1.0.4-win-x64.exe` is written to `release/`.
+The finished `EC fix-it-1.0.5-win-x64.exe` is written to `release/`.
 It is a self-contained portable desktop app and does not require a separate
 Node.js installation.
 
@@ -54,11 +54,15 @@ version is available, **Download** opens its verified portable Windows
 executable in the browser. Close EC fix-it before replacing the old executable.
 
 Each published release must use a version tag (for example,
-`ec-fix-it-v1.0.4`) and include an asset named
+`ec-fix-it-v1.0.5`) and include an asset named
 `EC fix-it-X.Y.Z-win-x64.exe`. The checker reports when no release or matching
 executable has been published yet. After changing the app version in
 `package.json`, rebuild the portable executable before attaching it to the
 matching GitHub release.
+
+The update checker accepts both `EC fix-it-X.Y.Z-win-x64.exe` and
+`EC.fix-it-X.Y.Z-win-x64.exe` asset naming and validates downloads against the
+canonical `EC-fix-it` repository URL.
 
 Release notes are maintained in [CHANGELOG.md](./CHANGELOG.md) and can be
 opened from the app's bottom-right **Changelog** link.

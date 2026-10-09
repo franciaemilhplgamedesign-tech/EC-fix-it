@@ -1,9 +1,9 @@
 "use strict";
 
 const RELEASES_API =
-  "https://api.github.com/repos/franciaemilhplgamedesign-tech/End-Card-Checker/releases/latest";
+  "https://api.github.com/repos/franciaemilhplgamedesign-tech/EC-fix-it/releases/latest";
 const RELEASE_DOWNLOAD_PREFIX =
-  "/franciaemilhplgamedesign-tech/End-Card-Checker/releases/download/";
+  "/franciaemilhplgamedesign-tech/EC-fix-it/releases/download/";
 
 function parseVersion(version) {
   const match = /^(?:ec-fix-it-)?v?(\d+)\.(\d+)\.(\d+)$/i.exec(version);
@@ -24,8 +24,12 @@ function compareVersions(left, right) {
   return 0;
 }
 
-function validateDownloadUrl(asset, expectedName) {
-  if (!asset || asset.name !== expectedName || typeof asset.browser_download_url !== "string") {
+function validateDownloadUrl(asset, expectedNames) {
+  if (
+    !asset ||
+    !expectedNames.includes(asset.name) ||
+    typeof asset.browser_download_url !== "string"
+  ) {
     throw new Error(
       "A newer release was found, but its portable Windows executable is missing.",
     );
@@ -37,7 +41,7 @@ function validateDownloadUrl(asset, expectedName) {
     downloadUrl.protocol !== "https:" ||
     downloadUrl.hostname !== "github.com" ||
     !downloadUrl.pathname.startsWith(RELEASE_DOWNLOAD_PREFIX) ||
-    fileName !== expectedName
+    fileName !== asset.name
   ) {
     throw new Error("The release download link is invalid.");
   }
@@ -73,13 +77,18 @@ async function checkForUpdate(currentVersion, fetchImpl = fetch) {
     return { status: "current", currentVersion, latestVersion };
   }
 
-  const expectedName = "EC fix-it-" + latestVersion + "-win-x64.exe";
-  const asset = release.assets.find((item) => item && item.name === expectedName);
+  const expectedNames = [
+    "EC fix-it-" + latestVersion + "-win-x64.exe",
+    "EC.fix-it-" + latestVersion + "-win-x64.exe",
+  ];
+  const asset = release.assets.find(
+    (item) => item && expectedNames.includes(item.name),
+  );
   return {
     status: "available",
     currentVersion,
     latestVersion,
-    downloadUrl: validateDownloadUrl(asset, expectedName),
+    downloadUrl: validateDownloadUrl(asset, expectedNames),
   };
 }
 

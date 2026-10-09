@@ -1,7 +1,7 @@
 {
   "name": "ec-fix-it",
   "private": true,
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "EC fix-it: check and repair End Cards in single-file HTML ads.",
   "author": "EC fix-it",
   "main": "electron/main.cjs",
