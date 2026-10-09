@@ -34,6 +34,8 @@ test("reports a newer release with the matching portable Windows asset", async (
       assets: [
         {
           name: "EC fix-it-1.2.0-win-x64.exe",
+          size: 8,
+          digest: "sha256:" + "a".repeat(64),
           browser_download_url:
             "https://github.com/franciaemilhplgamedesign-tech/EC-fix-it/releases/download/ec-fix-it-v1.2.0/EC%20fix-it-1.2.0-win-x64.exe",
         },
@@ -45,9 +47,34 @@ test("reports a newer release with the matching portable Windows asset", async (
     status: "available",
     currentVersion: "1.0.0",
     latestVersion: "1.2.0",
+    assetName: "EC fix-it-1.2.0-win-x64.exe",
+    assetSize: 8,
+    sha256: "a".repeat(64),
     downloadUrl:
       "https://github.com/franciaemilhplgamedesign-tech/EC-fix-it/releases/download/ec-fix-it-v1.2.0/EC%20fix-it-1.2.0-win-x64.exe",
   });
+});
+
+test("accepts the version-only portable executable name", async () => {
+  const result = await checkForUpdate(
+    "1.0.5",
+    createFetchResponse(200, {
+      tag_name: "ec-fix-it-v1.0.6",
+      assets: [
+        {
+          name: "EC fix-it 1.0.6.exe",
+          size: 8,
+          digest: "sha256:" + "c".repeat(64),
+          browser_download_url:
+            "https://github.com/franciaemilhplgamedesign-tech/EC-fix-it/releases/download/ec-fix-it-v1.0.6/EC%20fix-it%201.0.6.exe",
+        },
+      ],
+    }),
+  );
+
+  assert.equal(result.status, "available");
+  assert.equal(result.assetName, "EC fix-it 1.0.6.exe");
+  assert.equal(result.latestVersion, "1.0.6");
 });
 
 test("accepts the portable executable filename used by the published release", async () => {
@@ -58,6 +85,8 @@ test("accepts the portable executable filename used by the published release", a
       assets: [
         {
           name: "EC.fix-it-1.0.4-win-x64.exe",
+          size: 8,
+          digest: "sha256:" + "b".repeat(64),
           browser_download_url:
             "https://github.com/franciaemilhplgamedesign-tech/EC-fix-it/releases/download/ec-fix-it-v1.0.4/EC.fix-it-1.0.4-win-x64.exe",
         },
@@ -69,6 +98,9 @@ test("accepts the portable executable filename used by the published release", a
     status: "available",
     currentVersion: "1.0.3",
     latestVersion: "1.0.4",
+    assetName: "EC.fix-it-1.0.4-win-x64.exe",
+    assetSize: 8,
+    sha256: "b".repeat(64),
     downloadUrl:
       "https://github.com/franciaemilhplgamedesign-tech/EC-fix-it/releases/download/ec-fix-it-v1.0.4/EC.fix-it-1.0.4-win-x64.exe",
   });

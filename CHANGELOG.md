@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.6 — 2026-10-09
+
+- Renamed portable builds to `EC fix-it 1.x.x.exe`.
+- Added verified automatic updates that download beside the current
+  executable, verify the published size, SHA-256, and Windows executable
+  signature, then replace and relaunch with rollback on failure.
+
 ## 1.0.5 — 2026-10-09
 
 - Fixed update detection for the renamed public `EC-fix-it` repository.

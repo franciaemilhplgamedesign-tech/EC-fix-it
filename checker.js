@@ -1475,9 +1475,9 @@
             updateStatus.textContent =
               "Version " +
               update.latestVersion +
-              " is available. Download it, then close EC fix-it and replace the existing executable.";
+              " is available. Install it to replace and restart EC fix-it.";
             downloadUpdateButton.textContent =
-              "Download v" + update.latestVersion;
+              "Install v" + update.latestVersion + " and restart";
             downloadUpdateButton.hidden = false;
           } else {
             throw new Error("GitHub returned an unknown update status.");
@@ -1493,19 +1493,23 @@
 
       downloadUpdateButton.addEventListener("click", async () => {
         downloadUpdateButton.disabled = true;
-        updateStatus.textContent = "Opening the verified GitHub release download…";
+        checkUpdatesButton.disabled = true;
+        updateStatus.textContent = "Downloading and verifying the update…";
         try {
-          const update = await updateApi.openUpdateDownload();
+          const update = await updateApi.installUpdate();
           updateStatus.textContent =
-            "The v" +
+            "Verified v" +
             update.version +
-            " download was opened. Close EC fix-it before replacing the existing executable.";
+            " is ready. EC fix-it will close, replace the old executable, and reopen as " +
+            update.fileName +
+            ".";
         } catch (error) {
           updateStatus.textContent =
-            "Could not open the update download: " +
+            "Could not install the update: " +
             (error instanceof Error ? error.message : "Unknown error.");
         } finally {
           downloadUpdateButton.disabled = false;
+          checkUpdatesButton.disabled = false;
         }
       });
     }

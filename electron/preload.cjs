@@ -6,5 +6,5 @@ contextBridge.exposeInMainWorld("ecFixIt", {
   getVersion: () => ipcRenderer.invoke("app:get-version"),
   getChangelog: () => ipcRenderer.invoke("app:get-changelog"),
   checkForUpdates: () => ipcRenderer.invoke("updates:check"),
-  openUpdateDownload: () => ipcRenderer.invoke("updates:download"),
+  installUpdate: () => ipcRenderer.invoke("updates:install"),
 });

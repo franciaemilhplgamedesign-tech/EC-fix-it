@@ -1,10 +1,11 @@
 "use strict";
 
-const { app, BrowserWindow, dialog, ipcMain, shell } = require("electron");
+const { app, BrowserWindow, dialog, ipcMain } = require("electron");
 const fs = require("node:fs/promises");
 const path = require("node:path");
 const { fileURLToPath } = require("node:url");
 const { checkForUpdate } = require("./update-checker.cjs");
+const { startWindowsUpdate } = require("./update-installer.cjs");
 
 function assertTrustedSender(event) {
   const frame = event.senderFrame;
@@ -34,14 +35,30 @@ ipcMain.handle("updates:check", async (event) => {
   return checkForUpdate(app.getVersion());
 });
 
-ipcMain.handle("updates:download", async (event) => {
+ipcMain.handle("updates:install", async (event) => {
   assertTrustedSender(event);
+  if (!app.isPackaged || process.platform !== "win32") {
+    throw new Error("Automatic updates are available only in the packaged Windows app.");
+  }
   const update = await checkForUpdate(app.getVersion());
   if (update.status !== "available") {
     throw new Error("There is no newer Windows executable to download.");
   }
-  await shell.openExternal(update.downloadUrl);
-  return { version: update.latestVersion };
+  if (!update.sha256) {
+    throw new Error(
+      "This release does not publish a SHA-256 digest, so automatic installation was blocked. Republish it with a SHA-256 digest.",
+    );
+  }
+  const executablePath = process.env.PORTABLE_EXECUTABLE_FILE;
+  if (!executablePath) {
+    throw new Error(
+      "The portable executable location is unavailable. Start EC fix-it from its portable .exe before updating.",
+    );
+  }
+
+  const result = await startWindowsUpdate(update, executablePath, process.pid);
+  setTimeout(() => app.quit(), 1000);
+  return result;
 });
 
 function createWindow() {

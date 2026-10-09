@@ -78,17 +78,25 @@ async function checkForUpdate(currentVersion, fetchImpl = fetch) {
   }
 
   const expectedNames = [
+    "EC fix-it " + latestVersion + ".exe",
+    "EC fix-it " + latestVersion + "-win-x64.exe",
     "EC fix-it-" + latestVersion + "-win-x64.exe",
     "EC.fix-it-" + latestVersion + "-win-x64.exe",
   ];
   const asset = release.assets.find(
     (item) => item && expectedNames.includes(item.name),
   );
+  const downloadUrl = validateDownloadUrl(asset, expectedNames);
   return {
     status: "available",
     currentVersion,
     latestVersion,
-    downloadUrl: validateDownloadUrl(asset, expectedNames),
+    assetName: asset.name,
+    assetSize: asset.size,
+    sha256: typeof asset.digest === "string"
+      ? asset.digest.replace(/^sha256:/i, "")
+      : null,
+    downloadUrl,
   };
 }
 

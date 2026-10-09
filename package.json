@@ -1,7 +1,7 @@
 {
   "name": "ec-fix-it",
   "private": true,
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "EC fix-it: check and repair End Cards in single-file HTML ads.",
   "author": "EC fix-it",
   "main": "electron/main.cjs",
@@ -29,6 +29,7 @@
       "electron/main.cjs",
       "electron/preload.cjs",
       "electron/update-checker.cjs",
+      "electron/update-installer.cjs",
       "CHANGELOG.md",
       "package.json"
     ],
@@ -44,7 +45,7 @@
       ]
     },
     "portable": {
-      "artifactName": "EC fix-it-${version}-win-x64.exe"
+      "artifactName": "EC fix-it ${version}.exe"
     }
   },
   "devDependencies": {
