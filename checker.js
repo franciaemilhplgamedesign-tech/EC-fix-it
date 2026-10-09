@@ -1324,6 +1324,7 @@
     const updateApi = window.ecFixIt;
     const changelogDialog = document.getElementById("changelog-dialog");
     const changelogBody = document.getElementById("changelog-body");
+    const builderFrame = document.querySelector(".mip-builder-frame");
 
     let selectedFile = null;
     let selectedSource = "";
@@ -1331,6 +1332,18 @@
     let selectedMipFile = null;
     let selectedSipFile = null;
     let toastTimer = 0;
+
+    function syncBuilderTheme(theme) {
+      builderFrame.dataset.theme = theme;
+      builderFrame.contentWindow?.postMessage(
+        { type: "ec-fix-it-theme", theme },
+        "*",
+      );
+    }
+
+    builderFrame.addEventListener("load", () => {
+      syncBuilderTheme(document.documentElement.dataset.theme);
+    });
 
     function applyTheme(theme, persist = false) {
       const nextTheme = theme === "dark" ? "dark" : "light";
@@ -1343,6 +1356,7 @@
       themeColor.content = getComputedStyle(document.documentElement)
         .getPropertyValue("--theme-color")
         .trim();
+      syncBuilderTheme(nextTheme);
       themeToggle.setAttribute("aria-label", "Switch to " + followingTheme + " mode");
       themeToggle.title = "Switch to " + followingTheme + " mode";
       themeToggleLabel.textContent =

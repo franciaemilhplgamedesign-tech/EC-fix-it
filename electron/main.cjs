@@ -46,10 +46,10 @@ ipcMain.handle("updates:download", async (event) => {
 
 function createWindow() {
   const window = new BrowserWindow({
-    width: 960,
-    height: 800,
-    minWidth: 360,
-    minHeight: 560,
+    width: 1440,
+    height: 960,
+    minWidth: 900,
+    minHeight: 650,
     title: "EC fix-it",
     backgroundColor: "#f7f7f5",
     autoHideMenuBar: true,
@@ -72,11 +72,17 @@ function createWindow() {
   window.webContents.on("will-download", async (event, item) => {
     item.pause();
 
+    const filename = item.getFilename();
+    const isProjectBundle = path.extname(filename).toLowerCase() === ".zip";
     const { canceled, filePath } = await dialog.showSaveDialog(window, {
-      title: "Save fixed End Card HTML",
-      defaultPath: item.getFilename(),
-      buttonLabel: "Save fixed file",
-      filters: [{ name: "HTML files", extensions: ["html", "htm"] }],
+      title: isProjectBundle ? "Save MIP Builder project" : "Save EC fix-it HTML",
+      defaultPath: filename,
+      buttonLabel: "Save file",
+      filters: [
+        isProjectBundle
+          ? { name: "ZIP archives", extensions: ["zip"] }
+          : { name: "HTML files", extensions: ["html", "htm"] },
+      ],
     });
 
     if (canceled || !filePath) {

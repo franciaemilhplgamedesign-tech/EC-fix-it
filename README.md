@@ -23,6 +23,12 @@ in the output alongside the new SIP. The MIP's display timing and layout are
 preserved. Multiple placeholders are rejected as ambiguous. If there is no
 placeholder, the SIP is added as a full-screen Base64-backed iframe overlay.
 
+The **MIP Builder** tab embeds the Template Builder for designing scenes,
+placing interactive elements, previewing common device sizes, importing
+templates, and exporting a single HTML file or a project ZIP. Its standalone
+page is bundled locally as `mip-builder.html`; it does not require a network
+connection or a separate runtime.
+
 Both repair and injection enforce a hard output limit of 5 MB
 (5,000,000 bytes). Oversized output is rejected before download.
 
@@ -35,7 +41,7 @@ npm install
 npm run dist:win
 ```
 
-The finished `EC fix-it-1.0.3-win-x64.exe` is written to `release/`.
+The finished `EC fix-it-1.0.4-win-x64.exe` is written to `release/`.
 It is a self-contained portable desktop app and does not require a separate
 Node.js installation.
 
@@ -48,7 +54,7 @@ version is available, **Download** opens its verified portable Windows
 executable in the browser. Close EC fix-it before replacing the old executable.
 
 Each published release must use a version tag (for example,
-`ec-fix-it-v1.0.3`) and include an asset named
+`ec-fix-it-v1.0.4`) and include an asset named
 `EC fix-it-X.Y.Z-win-x64.exe`. The checker reports when no release or matching
 executable has been published yet. After changing the app version in
 `package.json`, rebuild the portable executable before attaching it to the
